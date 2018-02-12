@@ -1,0 +1,15 @@
+{
+  "name": "weatheralerter",
+  "version": "1.0.0",
+  "description": "Text Message Weather Alerts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git remote add origin https://github.com/tmelliottjr/weatheralerter.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
