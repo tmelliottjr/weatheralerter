@@ -185,4 +185,7 @@ pip-selfcheck.json
 .history
 
 
+### Sqlite ###
+app.db
+
 # End of https://www.gitignore.io/api/node,python,virtualenv,visualstudiocode
