@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify, Response
+from flask import render_template, request, jsonify
 from app import app
 from app.apis import sms, weather
 
