@@ -14,8 +14,7 @@ def subscribe():
   user = User.query.filter(User.phone_number == phone_number).first()
   
   if not user:
-    user = User()
-    user.phone_number = phone_number
+    user = User(phone_number=phone_number)
 
   user.verification_code = User.generate_verification_code()
   user.zip_code = zip_code
@@ -42,6 +41,7 @@ def verify_subscription():
       user.subscribed = True
       user.verification_code = ''
       sms.send(user.phone_number, 'Your WeatherAlerter subscription has been confirmed!')
+      sms.send(user.phone_number, weather.get_current(user.zip_code))
       response = build_response('success', 'account verified', 200)
     else:
       response = build_response('failure', 'invalid verification code', 400)
@@ -52,7 +52,6 @@ def verify_subscription():
   db.session.commit()
 
   return response
-
 
 # unsubscribe from service
 @app.route('/unsubscribe', methods=['POST'])
