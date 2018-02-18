@@ -41,7 +41,16 @@ def verify_subscription():
       user.subscribed = True
       user.verification_code = ''
       sms.send(user.phone_number, 'Your WeatherAlerter subscription has been confirmed!')
-      sms.send(user.phone_number, weather.get_current(user.zip_code))
+      (location_key, friendly_name) = weather.get_location(user.zip_code)
+      daily_forecast = weather.get_daily_forecast(location_key)
+
+      deg = u'\N{DEGREE SIGN}'
+      high_temp = daily_forecast['DailyForecasts'][0]['Temperature']['Maximum']['Value']
+      low_temp = daily_forecast['DailyForecasts'][0]['Temperature']['Minimum']['Value']
+      headline_text = daily_forecast['Headline']['Text']
+      weather_message = f'{friendly_name}:\nHigh: {high_temp}{deg}\nLow: {low_temp}{deg}\n{headline_text}'
+
+      sms.send(user.phone_number, weather_message)
       response = build_response('success', 'account verified', 200)
     else:
       response = build_response('failure', 'invalid verification code', 400)
