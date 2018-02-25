@@ -1,34 +1,55 @@
 import re
-import json
-import requests
-from app import app
+from pyccuweather.connector import Connection
 
-apikey = app.config['AW_API_KEY']
-base_url = 'http://dataservice.accuweather.com/{resource}/'
-version = 'v1'
-api_url = f'{base_url}{version}/'
+api_type = 'dataservice'
 
 # FIXME: reduce code duplication
 # FIXME: improve validation and failure response
 
-def get_daily_forecast(location_key):
-  resource = 'forecasts'
-  endpoint = f'daily/1day/{location_key}'
-  forecast_url = f'{api_url.format(resource=resource)}{endpoint}'
-  params = {'apikey': apikey}
-  resp = requests.get(forecast_url, params=params)
-  return resp.json()
+class Forecast(object):
+  def __init__(self):
+    self.conn = Connection(api_type=api_type)
 
-def valid_zip_code(zip_code):
-  return re.search(r'^\d{5}(?:[-\s]\d{4})?$', zip_code)
+  def location_from_postal_code(self, country_code='us', postal_code=None):
+    if postal_code is None:
+      raise ValueError('Missing postal code')
+    
+    if not self.valid_postal_code(postal_code):
+      raise ValueError('Invalid postal code')
+    
+    self.location = self.conn.loc_postcode(country_code, postal_code)
+    
+    return self.location
 
-def get_location(zip_code):
-  endpoint = '/postalcodes/search'
-  resource = 'locations'
-  location_url = f'{api_url.format(resource=resource)}{endpoint}'
-  params = {'apikey': apikey, 'q': zip_code}
-  resp = requests.get(location_url, params=params).json()[0] # Only ever want first/only result
-  friendly_name = resp['LocalizedName']
-  location_key = resp['Key']
-  return (location_key, friendly_name)
+  def valid_postal_code(self, postal_code):
+    return re.search(r'^\d{5}(?:[-\s]\d{4})?$', postal_code)
+
+  def get_forecast(self, type='1d', lkey=None):
+    
+    if lkey is None:
+      try:
+        lkey = self.location.lkey
+      except AttributeError:
+        raise ValueError('Location key required')
+    
+    self.forecast = self.conn.get_forecast(type, lkey=self.location.lkey)
+
+    return self.forecast
+  
+  def formatted_forecast(self):
+    if self.forecast is None:
+      raise ValueError('Forecast required')
+
+    if self.location is None:
+      raise ValueError('Location required')
+        
+    # One day forecasts only
+    for k in self.forecast.forecasts:
+      min = self.forecast.forecasts[k].temp_min.F
+      max = self.forecast.forecasts[k].temp_max.F
+
+    deg = u'\N{DEGREE SIGN}'
+    formatted = f'{self.location.localized_name}:\nHigh: {max}{deg}\nLow: {min}{deg}\n{self.forecast.synopsis}'
+
+    return formatted
   
