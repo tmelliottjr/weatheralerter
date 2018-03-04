@@ -30,32 +30,39 @@ def subscribe():
 @app.route('/verify', methods=['POST'])
 def verify_subscription():
   req = request.get_json(force=True)
-  phone_number = req['phone_number']
-  verification_code = req['verification_code']
+  bad_request = False
+  try:
+    phone_number = req['phone_number']
+    verification_code = req['verification_code']
+  except KeyError:
+    bad_request = True
 
-  user = User.query.filter(User.phone_number == phone_number).first()
-
-  # FIXME: move to user controller
-  if user:
-    if user.verify_verification_code(verification_code):
-      user.subscribed = True
-      user.verification_code = ''
-      sms.send(user.phone_number, 'Your WeatherAlerter subscription has been confirmed!')
-
-      forecast = weather.Forecast()
-      forecast.location_from_postal_code(postal_code=user.zip_code)
-      forecast.get_forecast()
-
-      sms.send(user.phone_number, forecast.formatted_forecast())
-
-      response = build_response('success', 'account verified', 200)
-    else:
-      response = build_response('failure', 'invalid verification code', 400)
+  if bad_request:
+    response = build_response('failure', 'Missing data.', 400)  
   else:
-    response = build_response('failure', 'account not found', 404)
+    user = User.query.filter(User.phone_number == phone_number).first()
 
-  db.session.add(user)
-  db.session.commit()
+    # FIXME: move to user controller
+    if user:
+      if user.verify_verification_code(verification_code):
+        user.subscribed = True
+        user.verification_code = ''
+        sms.send(user.phone_number, 'Your WeatherAlerter subscription has been confirmed!')
+
+        forecast = weather.Forecast()
+        forecast.location_from_postal_code(postal_code=user.zip_code)
+        forecast.get_forecast()
+
+        sms.send(user.phone_number, forecast.formatted_forecast())
+
+        response = build_response('success', 'account verified', 200)
+      else:
+        response = build_response('failure', 'Invalid verification code.', 400)
+    else:
+      response = build_response('failure', 'Account not found.', 404)
+
+    db.session.add(user)
+    db.session.commit()
 
   return response
 
