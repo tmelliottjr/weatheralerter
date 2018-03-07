@@ -74,7 +74,7 @@ def unsubscribe():
 # get current weather for zip code
 @app.route('/weather/current/<zip_code>')
 def current_weather(zip_code):
-  if weather.valid_zip_code(zip_code):
+  if weather.valid_postal_code(zip_code):
     response = build_response('success', weather.get_current(zip_code), 200)
   else:
     response = build_response('failure', 'bad request', 400)
@@ -84,7 +84,7 @@ def current_weather(zip_code):
 # get forecast for zip code
 @app.route('/weather/forecast/<zip_code>')
 def forecast(zip_code):
-  if weather.valid_zip_code(zip_code):
+  if weather.valid_postal_code(zip_code):
     response = build_response('success', weather.get_forecast(zip_code), 200)
   else:
     response = build_response('failure', 'bad request', 400)
