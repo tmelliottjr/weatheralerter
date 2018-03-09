@@ -3,32 +3,32 @@ from app import db
 from app.apis import sms, weather
 from app.models import User
 
+def build_subscribers(users):
+  subscribers = {}
 
-# for subscriber, v in subscribers.items():
-#   print(subscriber, v)
+  for user in users:
+    try:
+      subscribers[user.zip_code].append(user.phone_number)
+    except KeyError:
+      subscribers[user.zip_code]=[user.phone_number]
+  
+  return subscribers
 
-users = User.query.filter(User.subscribed == True).all()
+def get_forecast(zip_code):
+  forecast = weather.Forecast()
+  forecast.location_from_postal_code(postal_code=zip_code)
+  forecast.get_forecast()
 
-subscribers = {}
+  return forecast.formatted_forecast()
 
-for user in users:
-  try:
-    subscribers[user.zip_code].append(user.phone_number)
-  except KeyError:
-    subscribers[user.zip_code]=[user.phone_number]
+def send_daily_forecast(subscribers):
+  for zip_code, phone_numbers in subscribers.items():
+    forecast = get_forecast(zip_code)   
 
-for zip_code, phone_numbers in subscribers.items():
-  current_weather = weather.get_current(zip_code)
-  location = current_weather['name']
-  # print('high temp:' current_weather[''])
-  body = f'Current conditions in {location}:\n'
-  body += 'test'
-  print(body)
+    for phone_number in phone_numbers:
+      sms.send(phone_number, forecast)
 
-  # for phone_number in phone_numbers:
-    # body = 'Current weather conditions in'
-    # sms.send(phone_number, body)
-
-
-
-
+if __name__ == '__main__':
+  users = User.query.filter(User.subscribed == True).all()
+  subscribers = build_subscribers(users)
+  send_daily_forecast(subscribers)
