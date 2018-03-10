@@ -7,8 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config.from_object(Config)
 
-if app.config['ENVIRONMENT'] == 'dev':
-  CORS(app)
+CORS(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
