@@ -20,7 +20,7 @@ mccabe==0.6.1
 nose==1.3.7
 numpy==1.14.1
 pandas==0.22.0
-pyccuweather==0.31
+-e git+https://github.com/tmelliottjr/pyccuweather.git@016343d923ce0c1e1dd6a31cf8034e447825b46a#egg=pyccuweather
 PyJWT==1.5.3
 pylint==1.8.2
 PySocks==1.6.8
@@ -32,6 +32,7 @@ six==1.11.0
 SQLAlchemy==1.2.2
 twilio==6.10.3
 urllib3==1.22
+uWSGI==2.0.17
 Werkzeug==0.14.1
 wrapt==1.10.11
 WTForms==2.1
