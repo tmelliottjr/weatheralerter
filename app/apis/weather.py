@@ -30,7 +30,7 @@ class Forecast(object):
       except AttributeError:
         raise ValueError('Location key required')
     
-    self.forecast = self.conn.get_forecast(type, lkey=self.location.lkey)
+    self.forecast = self.conn.get_forecast(type, lkey=self.location.lkey, metric=False)
 
     return self.forecast
   
@@ -46,8 +46,11 @@ class Forecast(object):
       min = self.forecast.forecasts[k].temp_min.F
       max = self.forecast.forecasts[k].temp_max.F
 
+    for k in self.forecast.forecasts:
+      day_synopsis = self.forecast.forecasts[k].day.synopsis
+
     deg = u'\N{DEGREE SIGN}'
-    formatted = f'{self.location.localized_name}:\nHigh: {max:.2f}{deg}\nLow: {min:.2f}{deg}\n{self.forecast.synopsis}'
+    formatted = f'{self.location.localized_name}:\nHigh: {max:.2f}{deg}\nLow: {min:.2f}{deg}\n{day_synopsis}'
 
     return formatted
   
