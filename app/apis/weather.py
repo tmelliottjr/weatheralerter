@@ -1,14 +1,12 @@
 import re
 from pyccuweather.connector import Connection
 
-api_type = 'dataservice'
-
 # FIXME: reduce code duplication
 # FIXME: improve validation and failure response
 
 class Forecast(object):
   def __init__(self):
-    self.conn = Connection(api_type=api_type)
+    self.conn = Connection(api_type='dataservice')
 
   def location_from_postal_code(self, country_code='us', postal_code=None):
     if postal_code is None:
