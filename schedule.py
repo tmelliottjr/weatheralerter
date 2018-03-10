@@ -1,3 +1,5 @@
+#!/var/www/weatheralerter/venv/bin/python
+
 import json
 from app import db
 from app.apis import sms, weather
