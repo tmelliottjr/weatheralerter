@@ -31,6 +31,6 @@ def send_daily_forecast(subscribers):
       sms.send(phone_number, forecast)
 
 if __name__ == '__main__':
-  users = User.query.filter(User.phone_number == '4019652591').all()
+  users = User.query.filter(User.phone_number == '').all()
   subscribers = build_subscribers(users)
   send_daily_forecast(subscribers)
