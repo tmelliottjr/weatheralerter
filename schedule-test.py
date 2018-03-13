@@ -4,6 +4,7 @@ import json
 from app import db
 from app.apis import sms, weather
 from app.models import User
+import twilio
 
 def build_subscribers(users):
   subscribers = {}
@@ -28,9 +29,12 @@ def send_daily_forecast(subscribers):
     forecast = get_forecast(zip_code)   
 
     for phone_number in phone_numbers:
-      sms.send(phone_number, forecast)
-
+      try:
+        sms.send(phone_number, forecast)
+      except twilio.base.exceptions.TwilioRestException as e:
+        print(f'{phone_number}:\n', e)
+      
 if __name__ == '__main__':
-  users = User.query.filter(User.phone_number == '').all()
+  users = User.query.filter(User.phone_number == '4019652591').all()
   subscribers = build_subscribers(users)
   send_daily_forecast(subscribers)
