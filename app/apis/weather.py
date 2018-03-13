@@ -47,7 +47,7 @@ class Forecast(object):
       max = self.forecast.forecasts[k].temp_max.F
 
     for k in self.forecast.forecasts:
-      day_synopsis = self.forecast.forecasts[k].day.phrase
+      day_synopsis = self.forecast.forecasts[k].day.synopsis
 
     deg = u'\N{DEGREE SIGN}'
     formatted = f'{self.location.localized_name}:\nHigh: {max:.2f}{deg}\nLow: {min:.2f}{deg}\n{day_synopsis}'
