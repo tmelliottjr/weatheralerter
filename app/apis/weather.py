@@ -50,7 +50,7 @@ class Forecast(object):
       day_synopsis = self.forecast.forecasts[k].day.synopsis
 
     deg = u'\N{DEGREE SIGN}'
-    formatted = f'{self.location.localized_name}:\nHigh: {max:.2f}{deg}\nLow: {min:.2f}{deg}\n{day_synopsis}'
+    formatted = f'{self.location.localized_name}:\nHigh: {max:.0f}{deg}\nLow: {min:.0f}{deg}\n{day_synopsis}'
 
     return formatted
   
