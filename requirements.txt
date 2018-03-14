@@ -18,13 +18,13 @@ Mako==1.0.7
 MarkupSafe==1.0
 mccabe==0.6.1
 nose==1.3.7
-numpy==1.14.1
+numpy==1.14.2
 pandas==0.22.0
--e git+https://github.com/tmelliottjr/pyccuweather.git@016343d923ce0c1e1dd6a31cf8034e447825b46a#egg=pyccuweather
+pyccuweather==0.31
 PyJWT==1.5.3
 pylint==1.8.2
 PySocks==1.6.8
-python-dateutil==2.6.1
+python-dateutil==2.7.0
 python-editor==1.0.3
 pytz==2018.3
 requests==2.18.4
